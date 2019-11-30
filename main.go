@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 )
 
 func main() {
@@ -22,6 +23,7 @@ func main() {
 and new file will store at same folder with timestamp suffix, e.g C:\source-10086.nc`)
 		os.Exit(0)
 	}
+	startAt := time.Now()
 	patcher, err := NewPatcher(sourceFilePath, InsertG43HXBetweenTXM6)
 	if err != nil {
 		fmt.Printf("Unexpected error while initializing patcher: %s", err)
@@ -46,5 +48,5 @@ and new file will store at same folder with timestamp suffix, e.g C:\source-1008
 	if err != nil {
 		fmt.Printf("New file flush failed: %s", err)
 	}
-	fmt.Printf("Patch work done, new file path: %s\n", modifiedFilePath)
+	fmt.Printf("Patch work done, new file path: %sTime used: %s\n", modifiedFilePath, time.Since(startAt))
 }

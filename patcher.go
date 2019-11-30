@@ -46,6 +46,13 @@ func NewPatcher(sourceFilePath string, patchFuncs ...PatchFunc) (*Patcher, error
 	if err != nil {
 		return nil, err
 	}
+	stat, err := sourceFile.Stat()
+	if err != nil {
+		return nil, err
+	}
+	if stat.IsDir() {
+		return nil, fmt.Errorf("%s is a directory not a CNC source file", sourceFilePath)
+	}
 	return &Patcher{
 		sourceFilePath: sourceFilePath,
 		sourceFile:     sourceFile,
