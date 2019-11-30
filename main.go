@@ -27,6 +27,7 @@ and new file will store at same folder with timestamp suffix, e.g C:\source-1008
 		fmt.Printf("Unexpected error while initializing patcher: %s", err)
 		os.Exit(1)
 	}
+	defer patcher.Close()
 	// Open modified new file
 	modifiedFilePath := ConstructCopyFilePath(sourceFilePath)
 	modifiedFile, err := os.OpenFile(modifiedFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -35,9 +36,7 @@ and new file will store at same folder with timestamp suffix, e.g C:\source-1008
 		os.Exit(1)
 	}
 	modifiedFileWriter := bufio.NewWriter(modifiedFile)
-	defer func() {
-		patcher.Close()
-	}()
+	defer modifiedFile.Close()
 	err = patcher.PatchAndWrite(modifiedFileWriter)
 	if err != nil {
 		fmt.Printf("Unexpected error while patch and write new file: %s", err)
@@ -47,6 +46,5 @@ and new file will store at same folder with timestamp suffix, e.g C:\source-1008
 	if err != nil {
 		fmt.Printf("New file flush failed: %s", err)
 	}
-	modifiedFile.Close()
 	fmt.Printf("Patch work done, new file path: %s\n", modifiedFilePath)
 }
